@@ -45,7 +45,8 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 100%;
+        height: 94%;
+		margin-top: 15px;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
@@ -53,11 +54,69 @@
         margin: 0;
         padding: 0;
       }
+	  ol, ul {
+		margin-top: 10px;
+	  }
+		.nav>li>a {
+			color:blue; 
+			background-color: #a3a3c2;
+		}	  
+	  .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+			color: blue;
+			background-color: white;
+		}
+		.navbar-header {
+			float: none;
+		}		
     </style>
 
 <script>
+var inputData2;
+var locations2 = [];
+$(document).ready(function(){
 
 
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var query_event_id = getParameterByName('maptype');
+if(query_event_id){
+  //alert(query_event_id);
+}
+
+if(query_event_id == "Available"){
+$("#availabilitytab").addClass("active")
+$("#capacitytab").removeClass("active")
+}
+	var facilityListUrl= "/facility_list.php";
+
+    $.ajax({   
+        url: facilityListUrl
+    }).done(function( data2 ) { 
+		if ( console && console.log ) {
+			inputData2 = $.parseJSON(data2);
+	
+			$(inputData2).each(function(key){
+				
+				if(query_event_id == "Available"){
+					for ( i = 0; i < inputData2[key].available; i++) {
+						locations2.push({lat: Number(inputData2[key].lat), lng: Number(inputData2[key].lon)})		
+					}
+				} else {
+					for ( i = 0; i < inputData2[key].capacity; i++) {
+						locations2.push({lat: Number(inputData2[key].lat), lng: Number(inputData2[key].lon)})		
+					}
+				}	
+			});//each
+			initMap();
+		};    
+        
+    });
+});
 
 </script>
   </head>
@@ -74,9 +133,16 @@
             <span class="icon-bar"></span>
           </button>
         <div style="text-align:center;">
-          <img src="logo.png" alt="AngeLift logo" style="width:20%;float:left;"><a class="navbar-brand" style="color: white !important; align:left; font-size=30px;"><p style="margin-top:1px; font-size:20px;">AngeLift - Shelter Availability</p></a>
-        </div>
-        </div>
+          <img src="logo.png" alt="AngeLift logo" style="width:50px;float:left;">
+		  
+		  <ul class="nav nav-pills">
+				<li id="capacitytab" class="active" role="presentation"><a href="dataVisualization.html?Capacity">Capacity</a></li>
+				<li id="availabilitytab" role="presentation"><a href="dataVisualization.html?maptype=Available">Availability</a></li>
+			<!--<li role="presentation"><a href="#">Messages</a></li>-->
+		  </ul>
+		
+		</div>
+    </div>
     </nav>
 </br></br>
 
@@ -98,7 +164,7 @@
         // Note: The code uses the JavaScript Array.prototype.map() method to
         // create an array of markers based on a given "locations" array.
         // The map() method here has nothing to do with the Google Maps API.
-        var markers = locations.map(function(location, i) {
+        var markers = locations2.map(function(location, i) {
           return new google.maps.Marker({
             position: location,
             label: labels[i % labels.length]
@@ -109,37 +175,6 @@
         var markerCluster = new MarkerClusterer(map, markers,
             {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
       }
-      var locations = [
-        {lat: 38.6324350, lng: -90.2268072},
-        {lat: 38.6324350, lng: -90.2268072},
-        {lat: 38.6324350, lng: -90.2268072},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6315630, lng: -90.2005890},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6465690, lng: -90.1997660},
-		{lat: 38.6333970, lng: -90.1955990},
-		{lat: 38.6333970, lng: -90.1955990},
-      ]
     </script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>

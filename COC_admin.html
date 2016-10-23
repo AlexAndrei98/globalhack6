@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Angel Lift</title>
+    <title>AngeLift</title>
       
   <script src="jquery-3.1.1.min.js"></script>
       
@@ -42,33 +42,78 @@
 }
       </style>
 <script>
+    jQuery(document).ready(function(){
+        
+ /*    $("#submit").click({   
+         $.ajax({   
+            url:"/facility_update_available.php?"
+        }).done(function( data ) { 
+       // if ( console && console.log ) {
+            //console.log( "Sample of data:", data );
+            //ex. var obj = jQuery.parseJSON( '{ "name": "John" }' );
+           // inputData = $.parseJSON(data);
+            //alert(""+inputData[0].address);
+           // date.getHours() + ":" + 
+      //date.getMinutes();
+        
+	     
+   
+            
+        });
+        
+        });*/
+    // This button will increment the value
+    $('.qtyplus').click(function(e){
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        fieldName = $(this).attr('field');
+        // Get its current value
+        var currentVal = parseInt($('input[name='+fieldName+']').val());
+        // If is not undefined
+        if (!isNaN(currentVal)) {
+            // Increment
+            $('input[name='+fieldName+']').val(currentVal + 1);
+        } else {
+            // Otherwise put a 0 there
+            $('input[name='+fieldName+']').val(0);
+        }
+    });
+    // This button will decrement the value till 0
+    $(".qtyminus").click(function(e) {
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        fieldName = $(this).attr('field');
+        // Get its current value
+        var currentVal = parseInt($('input[name='+fieldName+']').val());
+        // If it isn't undefined or its greater than 0
+        if (!isNaN(currentVal) && currentVal > 0) {
+            // Decrement one
+            $('input[name='+fieldName+']').val(currentVal - 1);
+        } else {
+            // Otherwise put a 0 there
+            $('input[name='+fieldName+']').val(0);
+        }
+    });
+});
+
+    /*
     var inputData;
     var name;
     var available;
-     $.ajax({   
-         url: "/facility_list.php"
-     }).done(function( data ) {
-         if ( console && console.log ) {
-            console.log( "Sample of data:", data );
-             
-              inputData=$.parseJSON(data);
-                 
-             });
-        $(inputData).each(function(key){
-         name = inputData[key].name();
-         available = inputData[key].available();
-     });
-     
-    $.("#inc").onclick(function() {
+    
+       
+    $("#inc").click(function() {
         $("#bedCount").html( $("#bedCount").innerHTML.val + 1); 
-    });
+    });  
          
-    $.("#dec").onclick(function() {
+    $("#dec").click(function() {
         $("#bedCount").html( $("#bedCount").innerHTML.val - 1);
     });
          
-    $.("#FCname").html(name);
-    $.("#FCBed").html(available);
+    $("#FCname").html(name);
+    $("#FCBed").html(available);*/
       </script>
 
   </head>
@@ -91,7 +136,9 @@
         </div>
     </nav>
 
-			
+         
+         
+
                 <div class="container" style="margin-top:20%">
     <div class="vertical-center-row" style="vertical-align: middle;">
         <div align="center">
@@ -99,23 +146,26 @@
             <h1>Bed Count: </h1>
             <span id="FCBed"></span>
             <h2><span id="bedCount"></span> </h2>
-            <button type="button" class="btn btn-success" id="inc">+1</button>
-  <button type="button" class="btn btn-danger" id="dec">-1</button>
-        <div class="form-group">
-  <label for="usr"><h1>Imput the bed count </h1></label>
-  <input type="text" class="form-control" id="usr" style="width:10%;">
-
+  <form id='myform' method='POST' action='#'>
+    <button type="button" class="btn btn-danger qtyminus" id="dec"  field='quantity'>-1</button>
+    <input type='text' name='quantity' value='0' class='qty' />
+    <button type="button" class="btn btn-success qtyplus" id="inc"  field='quantity'>+1</button>
+</form>  
             <br>
-            <button type="button" class="btn btn-primary">Submit</button>
+            <button type="button" id="submit" class="btn btn-primary">Submit</button>
 </div>
         
         </div>
+                    
+                    
     </div>
 
-          
+         
+      <!--  <div class="container"> 
+          <h1>You have updated your Capacity information.</h1>
       </div>
  
-        
+      ->  
             
             
     <!-- Bootstrap core JavaScript
