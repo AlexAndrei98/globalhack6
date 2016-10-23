@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Angel Lift</title>
+      
+  <script src="jquery-3.1.1.min.js"></script>
+      
+      
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css" >
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" >
+    
+<!-- Latest compiled and minified JavaScript -->
+<script src="/bootstrap-3.3.7-dist/js/bootstrap.js" ></script>
+
+         
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+.navbar .navbar-nav .navbar-brand{
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.navbar .navbar-collapse .navbar-brand {
+  text-align: center;
+}
+      </style>
+<script>
+    var inputData;
+    var name;
+    var available;
+     $.ajax({   
+         url: "/facility_list.php"
+     }).done(function( data ) {
+         if ( console && console.log ) {
+            console.log( "Sample of data:", data );
+             
+              inputData=$.parseJSON(data);
+                 
+             });
+        $(inputData).each(function(key){
+         name = inputData[key].name();
+         available = inputData[key].available();
+     });
+     
+    $.("#FCname").html(name);
+    $.("#FCBed").html(available);
+      </script>
+
+  </head>
+
+  <body style="background-color: #C1DAF0;">
+
+     <nav class="navbar-fixed-top" style="background-color: #5273D6 !important; color: white !important; max-height:80px">
+      <div class="container">
+          
+    <div class="navbar-header" >
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <div style="text-align:center;">
+          <img src="logo.png" alt="AngeLift logo" style="width:20%;float:left;"><a class="navbar-brand" style="color: white !important; align:left; font-size=30px;"><p style="margin-top:1px; font-size:20px;">AngeLift</p></a>
+        </div>
+        </div>
+    </nav>
+
+			
+                <div class="container" style="margin-top:20%">
+    <div class="vertical-center-row" style="vertical-align: middle;">
+        <div align="center">
+            <span id="FCname"></span>
+            <h1>Bed Count: </h1>
+            <span id="FCBed"></span>
+            <h2>37 </h2>
+            <button type="button" class="btn btn-success">+1</button>
+  <button type="button" class="btn btn-danger">-1</button>
+        <div class="form-group">
+  <label for="usr"><h1>Imput the bed count </h1></label>
+  <input type="text" class="form-control" id="usr" style="width:10%;">
+
+            <br>
+            <button type="button" class="btn btn-primary">Submit</button>
+</div>
+        
+        </div>
+    </div>
+
+          
+      </div>
+ 
+        
+            
+            
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

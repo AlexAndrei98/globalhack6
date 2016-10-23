@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Angel Lift</title>
+      
+  <script src="jquery-3.1.1.min.js"></script>
+      
+      
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.min.css" >
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" >
+    
+<!-- Latest compiled and minified JavaScript -->
+<script src="/bootstrap-3.3.7-dist/js/bootstrap.js" ></script>
+
+         
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      
+<script>
+    var inputData;
+    $(document).ready(function(){
+     
+             $.ajax({   
+            url: "/get_request_list.php"
+        }).done(function( data ) { 
+        if ( console && console.log ) {
+            console.log( "Sample of data:", data );
+            //ex. var obj = jQuery.parseJSON( '{ "name": "John" }' );
+            inputData = $.parseJSON(data);
+            //alert(""+inputData[0].address);
+           // date.getHours() + ":" + 
+      //date.getMinutes();
+
+	
+
+
+            
+            $(inputData).each(function(key){
+                var dateWoTime = new Date(parseInt(inputData[key].receivedtime.substr(6)));
+                var min = "";
+                var hour = "";
+                var suffix = "";
+                
+                if(dateWoTime.getMinutes() < "10"){
+                    min = "0".concat(dateWoTime.getMinutes());
+                }else{
+                    min = dateWoTime.getMinutes();
+                }
+                
+                 if(dateWoTime.getHours() > "12"){
+                    hour = dateWoTime.getHours() - 12;
+                     suffix = "pm";
+                }else{
+                    hour = dateWoTime.getHours();
+                     suffix = "am";
+                }
+          
+				$("#pickupAddress").append("<a><li id='aid"+ key +"' class='list-group-item aidAll'>There was a request for shelter at "+ inputData[key].address +" at "+ hour + ":" + min + " " + suffix +".  That is approximently "+ inputData[key].distance +" miles away from you. Will you pick this person/people up? </li></a>");  
+                 
+				$("#aid" + key).click(function() {
+				$(".aidAll").removeClass("active"); 
+				$("#aid" + key).addClass("active");
+				});     
+   
+			});//each
+            
+             
+        }
+  });
+        
+        
+        
+      $("#begin").show();
+		    
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide(); 
+        $("#congrats").hide(); 
+    
+    
+     $("#beginNext").click(function() {
+         
+         <!--$("#pgBar").attr("aria-valuenow","10");-->
+         
+       $("#begin").hide();
+		
+		$("#register").show();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide(); 
+         $("#congrats").hide(); 
+      
+	});
+	   
+	$("#registerNext").click(function() {
+			$("#begin").hide();
+			$("#register").hide();
+			$("#answer").show();
+			$("#pickup").hide();
+			$("#confirm").hide();
+			$("#qualify").hide();
+			$("#shelterOptions").hide();
+			$("#shelterLoc").hide();
+			$("#congrats").hide(); 
+
+	});
+      
+    $("#answerNext").click(function() {
+         $("#begin").hide();
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").show();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+        $("#congrats").hide(); 
+        
+        $("#pickAddressForMap").html(inputData[0].address);
+        
+		initMap();
+	});
+    $("#pickupNext").click(function() {
+           $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").show();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+$("#congrats").hide(); 
+	});
+    $("#confirmNext").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").show();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+      $("#congrats").hide(); 
+	});
+    $("#qualifyNext").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").show();
+		$("#shelterLoc").hide();
+     $("#congrats").hide(); 
+	});
+    $("#shelterOptionsNext").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").show();
+        $("#congrats").hide(); 
+		initMap2();
+	});
+    $("#shelterLocNext").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+      $("#congrats").show();
+	});
+        
+        $("#congratsNext").click(function() {
+         $("#begin").hide();
+		$("#register").show();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+    $("#congrats").hide(); 
+	});
+        
+        $("#registerPrevious").click(function() {
+         $("#begin").show();
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+    $("#congrats").hide(); 
+	});
+      
+    $("#answerPrevious").click(function() {
+         $("#begin").hide();
+		
+		$("#register").show();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+ $("#congrats").hide(); 
+	});
+    $("#pickupPrevious").click(function() {
+           $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").show();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+$("#congrats").hide(); 
+	});
+    $("#confirmPrevious").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").show();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+      $("#congrats").hide(); 
+	});
+    $("#qualifyPrevious").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").show();
+		$("#qualify").hide();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+     $("#congrats").hide(); 
+	});
+    $("#shelterOptionsPrevious").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").show();
+		$("#shelterOptions").hide();
+		$("#shelterLoc").hide();
+      $("#congrats").hide(); 
+	});
+    $("#shelterLocPrevious").click(function() {
+         $("#begin").hide();
+		
+		$("#register").hide();
+        $("#answer").hide();
+		$("#pickup").hide();
+		$("#confirm").hide();
+		$("#qualify").hide();
+		$("#shelterOptions").show();
+		$("#shelterLoc").hide();
+      $("#congrats").hide();
+	});
+      $("#affirmitive").click(function() {
+       $("#affirmitive").addClass("active");
+       $("#negative").removeClass("active");   
+      });
+    
+      $("#negative").click(function() {
+       $("#negative").addClass("active");
+        $("#affirmitive").removeClass("active");  
+      });
+      
+        
+    $("#male").click(function() {
+       $("#male").addClass("active");
+       $("#female").removeClass("active");   
+      });
+    
+      $("#female").click(function() {
+       $("#female").addClass("active");
+        $("#male").removeClass("active");  
+      });
+         
+       $("#familyYes").click(function() {
+       $("#familyYes").addClass("active");
+       $("#familyNo").removeClass("active");   
+      });
+    
+      $("#familyNo").click(function() {
+       $("#familyNo").addClass("active");
+        $("#familyYes").removeClass("active");  
+      });   
+        
+       
+      $("#id1").click(function() {
+       $("#id1").addClass("active");
+       $("#id2").removeClass("active");  
+       $("#id3").removeClass("active"); 
+      });   
+        
+      $("#id2").click(function() {
+       $("#id2").addClass("active");
+       $("#id3").removeClass("active");  
+       $("#id1").removeClass("active"); 
+      });   
+        
+         $("#id3").click(function() {
+       $("#id3").addClass("active");
+       $("#id2").removeClass("active");  
+       $("#id1").removeClass("active"); 
+      });   
+      
+      $("#smsOn").click(function() {
+       $("#smsOn").addClass("active");
+       $("#smsOff").removeClass("active");  
+      
+      });  
+        
+        $("#smsOff").click(function() {
+       $("#smsOff").addClass("active");
+       $("#smsOn").removeClass("active");  
+      
+      });   
+         
+ 
+   
+ });
+  
+        
+                
+      
+
+</script>
+  
+    <style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+	   #map2 {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+  </head>
+
+  <body style="background-color: #C1DAF0;">
+
+    <nav class="navbar-fixed-top" style="background-color: #5273D6 !important; color: white !important; max-height:80px">
+      <div class="container">
+          
+    <div class="navbar-header" >
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <div style="text-align:center;">
+          <img src="logo.png" alt="AngeLift logo" style="width:20%;float:left;"><a class="navbar-brand" style="color: white !important; align:left; font-size=30px;"><p style="margin-top:10%; font-size:20px;">AngeLift</p></a>
+        </div>
+        </div>
+          
+        <!--   
+          
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand"  >Angel Drive</a>
+        </div>
+         
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#begin">Begin</a></li>
+              <li><a href="#sub">Subscribe </a></li>
+              <li><a href="#rr">Answer </a></li>
+              <li><a href="#pickup">Pick-Up </a></li>
+              <li><a href="#confirm">Confirm </a></li>
+              <li><a href="#qualify">Qualify </a></li>
+              <li><a href="#deliver">Shelter Directions </a></li>
+          </ul>
+        </div>
+          
+       -->   
+      </div>
+    </nav>
+  <br>
+      <div class="container" >
+          <div class="starter-template">
+        <br>
+      </div>
+      </div>
+    <div class="container" id="begin">
+      <div class="starter-template" style="margin-top: 15%">
+			<div class="progress">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:12%">
+				<span class="sr-only">12% Complete</span>
+			</div>
+			</div>          
+        <h1>Begin </h1>
+          <p class="lead">Thank you for using Angel Lift.  The concept is simple. Offer people needing shelter a ride to shelters that will accept them.  The world depends on generosity.</p>
+          <ol>
+          <li><b>Answer</b> the request for help. We will provide a list of people needing rides in your area.  Right now there a [insert number here] people needing rides withing [insert miles here] miles from you. </li>
+          <li><b>Pick-up </b> the people requesting shelter. We will give you the address of there location that they requested from. </li>
+          <li><b>Confirm</b> that there is acutally a person to pick up. Yes, it is possible that people request help and not actually be there.  Angel Lift can limit these false requests, but not prevent them entirely.  If there is a false request just let us know.  If this happens too many times we will not allow this number to request rides.   </li>
+          <li><b>Qualify</b> the person for the available shelters in the area.  Some shelters accept only minors, men, women, or families.  Just each riders name, age, and gender. </li>
+          <li><b>Deliver</b> these person(s) to the selected shelter.  Angel Lift will provide you an address and map to the one your request. </li>
+          </ol>
+          
+      </div>
+ <ul class="pager">
+  
+  <li class="next" ><a id="beginNext">Next</a></li>
+</ul>
+    </div><!-- /.container -->
+            
+    <div class="container" id="register">
+
+      <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:24%">
+				<span class="sr-only">24% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Are you ready to recieve calls:</h1>
+          <p class="lead">Turn Text Message Notifications on or off.</p>
+ 		  <div class="list-group" align="center">
+			<a id="registerNext" style="width:30%"><li class="list-group-item" style="width:30%">Yes</li></a>
+              <br>
+			<a id="registerPrevious"><li class="list-group-item" style="width:30%">No</li></a>
+          </div>
+
+	   
+      <br>
+       
+          
+      </div>
+ <ul class="pager">
+  <!--<li class="previous"><a id="registerPrevious">Previous</a></li>
+  <li class="next"><a id="registerNext">Next</a></li>-->
+</ul>
+    </div><!-- /.container -->
+      
+<div class="container" id="answer">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:36%">
+				<span class="sr-only">36% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Answer the Call</h1>
+          <p class="lead">Here is the list of people needing the ride.</p>
+      
+      <span id="pickupAddress"></span>
+      
+      <!--<a><li id="aid1"class="list-group-item">There was a request for shelter at <span id="pickupAddress"></span> for [1 bed] at [5:20 pm].  That is approximently [five] miles away from you. Will you pick this person/people up? </li></a>
+      
+      
+      <a><li id="aid2"class="list-group-item">There was a request for shelter at [111 Park Drive, Maplewood, MO 55555] for [1 bed] at [4:06 pm].  That is approximently [one] miles away from you. Will you pick this person/people up? </li></a>
+     <a> <li id="aid3" class="list-group-item">There was a request for shelter at [201 Forest Park Drive, Kirkwood, MO 44444] for [3 beds] at [2:00 pm].  That is approximently [ten] miles away from you. Will you pick this person/people up? </li></a>-->
+      
+
+          
+      </div>
+ <ul class="pager">
+  <li class="previous"><a id="answerPrevious">Previous</a></li>
+  <li class="next"><a id="answerNext">Accept Person</a></li>
+</ul>
+    </div><!-- /.container -->
+      
+      
+      <div class="container" id="pickup">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:48%">
+				<span class="sr-only">48% Complete</span>
+			</div>
+			</div>          
+        <h1>Pick-Up Directions</h1>
+          <p class="lead">Here is the address and map to locate the person that needs to get picked up: </p>
+     
+      <center>
+      
+      <p> <span id="pickAddressForMap"></span>
+      </p>
+      
+        <br>
+		<div id="map"  style="width:85%" ></div>
+		<script src="google_maps_api.js"></script>
+		<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_xeFIY6WUG3Fnl9M-QCGyJucEKT_PmVQ&callback=initMap">
+		</script>
+		
+      <br>
+    
+      </center>
+           <br>
+  
+      </div>
+ <ul class="pager">
+  <li class="previous"><a id="pickupPrevious">Cancel Request</a></li>
+  <li class="next"><a id="pickupNext">Next</a></li>
+</ul>
+    </div><!-- /.container -->
+      
+      
+          <div class="container" id="confirm">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:60%">
+				<span class="sr-only">60% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Pickup Confirmation</h1>
+          <p class="lead">Please let us know if there is actually a person that needs to be picked up.  Did you find a person at the location we sent you to? </p>
+     
+      <center>
+         <div class="list-group">
+          <a  ><li id="affirmitive" class="list-group-item" style="width:30%">Yes </li></a>
+          <a  ><li id="negative" class="list-group-item" style="width:30%">No  </li></a>
+         </div>
+      </center>
+ 
+          
+      </div>
+ <ul class="pager">
+  <li class="previous"><a id="confirmPrevious">Previous</a></li>
+  <li class="next"><a id="confirmNext">Next</a></li>
+</ul>
+    </div><!-- /.container -->
+      
+      
+  <div class="container" id="qualify">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:72%">
+				<span class="sr-only">72% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Qualify</h1>
+       <p>Let us help find them an accepting shelter</p>
+      <center>
+      
+       <div class="form-group" align="center">
+  <label for="usr">What is the gender of the person being picked up?</label>
+       <ul class="list-group">
+        <a  ><li id="male" class="list-group-item" style="width:30%">Male </li></a>
+          <a  ><li id="female" class="list-group-item" style="width:30%">Female  </li></a>   
+</ul>
+           
+<div class="form-group">
+  <input type="text" class="form-control" placeholder="Enter Age" id="age" style="width:30%">
+</div>
+      
+             <label for="usr">Is this a family?</label>
+       <ul class="list-group">
+        <a  ><li id="familyYes" class="list-group-item" style="width:30%">Yes </li></a>
+          <a  ><li id="familyNo" class="list-group-item" style="width:30%">No  </li></a>   
+</ul>
+           
+</div>
+
+      
+     
+     
+      </center>
+ 
+          
+      </div>
+ <ul class="pager">
+  <li class="previous"><a id="qualifyPrevious">Previous</a></li>
+  <li class="next"><a id="qualifyNext">Next</a></li>
+</ul>
+    </div><!-- /.container -->
+      
+
+      
+        <div class="container" id="shelterOptions">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:80%">
+				<span class="sr-only">80% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Shelter Options</h1>
+       <p>Here are the places that satisfies your request:</p>
+      <center>
+      
+      <center>
+          <a  ><li id="id1" class="list-group-item">[Shelter Name] is a shelter accepting [males] that has [one] bed available only [6 miles away] at [111 Park Avenue, Maryland Heights, MO 88888].  Would you like to deliver to this location?   </li></a>
+    <a  ><li id="id2" class="list-group-item">[Shelter Name]  is a shelter accepting [males] that has [one] bed available only [6 miles away] at [111 Park Avenue, Maryland Heights, MO 88888].  Would you like to deliver to this location?  </li></a>
+          <a  ><li id="id3" class="list-group-item">[Shelter Name]  is a shelter accepting [males] that has [one] bed available only [6 miles away] at [111 Park Avenue, Maryland Heights, MO 88888].  Would you like to deliver to this location?   </li></a>
+     
+     
+      </center>
+ 
+          
+      </div>
+
+       <ul class="pager">
+  <li class="previous"><a id="shelterOptionsPrevious">Previous</a></li>
+  <li class="next"><a id="shelterOptionsNext">Get Directions</a></li>
+</ul>
+      
+    </div><!-- /.container -->
+
+    
+            
+          <div class="container" id="shelterLoc">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:90%">
+				<span class="sr-only">90% Complete</span>
+			</div>
+			</div>          
+          
+        <h1>Delivers Location </h1>
+          <p class="lead">Here is the address of the location you chose. </p>
+     
+      <center>
+      
+      <p> 111 Park Drive, 
+          Maplewood, MO 55555
+      </p>
+      
+        <br>
+		
+		<div id="map2" align="left" style="width:85%"></div>
+
+		<!--<script src="google_maps_api.js"></script>
+		<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_xeFIY6WUG3Fnl9M-QCGyJucEKT_PmVQ&callback=initMap">
+		</script>-->
+      <br>
+         
+      </center>
+           <br>
+
+          
+      </div>
+
+ <ul class="pager">
+  <li class="previous"><a id="shelterLocPrevious">Previous</a></li>
+  <li class="next"><a id="shelterLocNext">Person has been dropped off.</a></li>
+</ul>
+              
+    </div><!-- /.container -->
+              
+            <div class="container" id="congrats">
+
+  <div class="starter-template">
+			<div class="progress" style="margin-top: 15%">
+			<div id="pgBar" class="progress-bar" role="progressbar" 
+			aria-valuemin="0" aria-valuemax="100" style="width:100%">
+				<span class="sr-only">100% Complete</span>
+			</div>
+			</div>     
+      <br>
+          <br>
+      <br>
+          <br>
+      <div class="container">
+    <div class="vertical-center-row" style="vertical-align: middle;">
+        <div align="center">
+            <h1 style="text-align: center ">Congrats </h1>
+          <p style="text-align: center" >Thank You! Please see if you can take someone else.</p>
+
+        
+        </div>
+    </div>
+
+          
+      </div>
+        
+
+          
+      </div>
+ <ul class="pager">
+ 
+  <li class="next"><a id="congratsNext">New Person</a></li>
+</ul>
+    </div><!-- /.container -->
+            
+            
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
